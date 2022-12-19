@@ -21,7 +21,7 @@ const initialStateFocus = {
   email: false,
   password: false,
 };
-export const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
@@ -58,10 +58,10 @@ export const LoginScreen = () => {
           source={require("../../assets/images/background.jpg")}
         >
           <StatusBar style="auto" />
-          {/* <KeyboardAvoidingView
+          <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
             style={{ width: "100%" }}
-          > */}
+          >
           <View style={styles.formBlock}>
             <View
               style={{
@@ -137,6 +137,7 @@ export const LoginScreen = () => {
                   <TouchableOpacity
                     activeOpacity={0.7}
                     style={styles.btnSecondary}
+                    onPress={() => navigation.navigate("Регистрация")}
                   >
                     <Text style={styles.btnSecondaryTitle}>
                       Нет аккаунта? Зарегистрироваться
@@ -146,7 +147,7 @@ export const LoginScreen = () => {
               )}
             </View>
           </View>
-          {/* </KeyboardAvoidingView> */}
+          </KeyboardAvoidingView>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>

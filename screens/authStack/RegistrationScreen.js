@@ -13,9 +13,8 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Dimensions,
-  Button,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { AvatarBoxIcon } from "../../shared/svgComponents";
 
 const initialState = {
   name: "",
@@ -28,14 +27,12 @@ const initialStateFocus = {
   email: false,
   password: false,
 };
-export const RegistrationScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
   const [avatar, setAvatar] = useState(true);
   const [showPassword, setShowPassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  console.log("isShowKeyboard: ", isShowKeyboard);
   const [state, setState] = useState(initialState);
   const [isFocused, setIsFocused] = useState(initialStateFocus);
-  console.log("isFocused: ", isFocused);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -67,52 +64,57 @@ export const RegistrationScreen = () => {
           source={require("../../assets/images/background.jpg")}
         >
           <StatusBar style="auto" />
-          {/* <KeyboardAvoidingView
+          <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
             style={{ width: "100%" }}
-          > */}
-          <View style={styles.avatar}>
-            {avatar ? (
-              <>
-                <Image
-                  style={styles.avatarImage}
-                  source={require("../../assets/images/avatar.jpg")}
-                />
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  style={styles.iconBlock}
-                  onPress={() => setAvatar(false)}
-                >
-                  <Ionicons
-                    style={styles.closeIcon}
-                    name="md-close-circle-outline"
-                    size={25}
-                    color="#E8E8E8"
-                  />
-                </TouchableOpacity>
-              </>
-            ) : (
-              <TouchableOpacity
-                style={styles.iconBlock}
-                activeOpacity={0.6}
-                onPress={() => setAvatar(true)}
-              >
-                <Ionicons
-                  style={styles.addIcon}
-                  name="add-circle-outline"
-                  size={25}
-                  color="#FF6C00"
-                />
-              </TouchableOpacity>
-            )}
-          </View>
-          <View style={styles.formBlock}>
+          >
             <View
               style={{
                 ...styles.form,
                 paddingBottom: isShowKeyboard ? 32 : 66,
+                height: isShowKeyboard ? 374 : 549,
               }}
             >
+              <View style={styles.avatar}>
+                {avatar ? (
+                  <>
+                    <Image
+                      style={styles.avatarImage}
+                      source={require("../../assets/images/avatar.jpg")}
+                    />
+                    <TouchableOpacity
+                      activeOpacity={0.6}
+                      style={styles.iconBlock}
+                      onPress={() => {
+                        setAvatar(false);
+                      }}
+                    >
+                      <AvatarBoxIcon
+                        style={{
+                          ...styles.avatarBoxIcon,
+                          transform: [{ rotate: "45deg" }],
+                        }}
+                        fill="#BDBDBD"
+                      />
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.iconBlock}
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setAvatar(true);
+                    }}
+                  >
+                    <AvatarBoxIcon
+                      style={{
+                        ...styles.avatarBoxIcon,
+                      }}
+                      fill="#BDBDBD"
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
               <Text style={styles.title}>Регистрация</Text>
               <TextInput
                 style={{
@@ -200,6 +202,7 @@ export const RegistrationScreen = () => {
                   <TouchableOpacity
                     activeOpacity={0.7}
                     style={styles.btnSecondary}
+                    onPress={() => navigation.navigate("Войти")}
                   >
                     <Text style={styles.btnSecondaryTitle}>
                       Уже есть аккаунт? Войти
@@ -208,8 +211,7 @@ export const RegistrationScreen = () => {
                 </>
               )}
             </View>
-          </View>
-          {/* </KeyboardAvoidingView> */}
+          </KeyboardAvoidingView>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -226,31 +228,9 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     justifyContent: "flex-end",
   },
-  avatar: {
-    textAlign: "center",
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    width: 120,
-    height: 120,
-    top: 60,
-    left: Dimensions.get("window").width / 2 - 60,
-    zIndex: 1,
-  },
-  avatarImage: {
-    borderRadius: 16,
-  },
-  closeIcon: {
-    zIndex: 2,
-    position: "absolute",
-    right: -13.5,
-    bottom: 9,
-  },
-  addIcon: {
-    zIndex: 2,
-    left: 108,
-    top: 84,
-  },
+
   form: {
+    position: "relative",
     width: "100%",
     paddingHorizontal: 16,
     paddingTop: 92,
@@ -258,6 +238,27 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     backgroundColor: "#ffffff",
   },
+  avatar: {
+    position: "absolute",
+    textAlign: "center",
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+    width: 120,
+    height: 120,
+    top: -60,
+    left: Dimensions.get("window").width / 2 - 60,
+  },
+  avatarImage: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 16,
+  },
+  iconBlock: {
+    position: "absolute",
+    right: -12,
+    bottom: 14,
+  },
+
   title: {
     fontFamily: "R-Medium",
     fontSize: 30,
