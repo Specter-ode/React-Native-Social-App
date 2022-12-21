@@ -62,91 +62,92 @@ const LoginScreen = ({ navigation }) => {
             behavior={Platform.OS == "ios" ? "padding" : "height"}
             style={{ width: "100%" }}
           >
-          <View style={styles.formBlock}>
-            <View
-              style={{
-                ...styles.form,
-                paddingBottom: isShowKeyboard ? 32 : 132,
-              }}
-            >
-              <Text style={styles.title}>Войти</Text>
-              <TextInput
+            <View style={styles.formBlock}>
+              <View
                 style={{
-                  ...styles.input,
-                  borderColor: isFocused.email ? "#FF6C00" : "#E8E8E8",
-                  backgroundColor: isFocused.email ? "#fff" : "#F6F6F6",
+                  ...styles.form,
+                  paddingBottom: isShowKeyboard ? 32 : 132,
+                  height: isShowKeyboard ? 258 : 474,
                 }}
-                placeholder="Адрес электронной почты"
-                placeholderTextColor="#BDBDBD"
-                onFocus={() => {
-                  handleInputFocus("email");
-                }}
-                onBlur={() => {
-                  handleInputBlur("email");
-                }}
-                value={state.email}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, email: value }))
-                }
-              />
-              <View>
+              >
+                <Text style={styles.title}>Войти</Text>
                 <TextInput
                   style={{
                     ...styles.input,
-                    marginBottom: 0,
-                    borderColor: isFocused.password ? "#FF6C00" : "#E8E8E8",
-                    backgroundColor: isFocused.password ? "#fff" : "#F6F6F6",
+                    borderColor: isFocused.email ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocused.email ? "#fff" : "#F6F6F6",
                   }}
-                  placeholder="Пароль"
+                  placeholder="Адрес электронной почты"
                   placeholderTextColor="#BDBDBD"
-                  secureTextEntry={showPassword}
                   onFocus={() => {
-                    handleInputFocus("password");
+                    handleInputFocus("email");
                   }}
                   onBlur={() => {
-                    handleInputBlur("password");
+                    handleInputBlur("email");
                   }}
-                  value={state.password}
+                  value={state.email}
                   onChangeText={(value) =>
-                    setState((prevState) => ({
-                      ...prevState,
-                      password: value,
-                    }))
+                    setState((prevState) => ({ ...prevState, email: value }))
                   }
                 />
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={styles.btnShowPassword}
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  <Text style={styles.titleShowPassword}>
-                    {showPassword ? "Показать" : "Скрыть"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              {!isShowKeyboard && (
-                <>
+                <View>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      marginBottom: 0,
+                      borderColor: isFocused.password ? "#FF6C00" : "#E8E8E8",
+                      backgroundColor: isFocused.password ? "#fff" : "#F6F6F6",
+                    }}
+                    placeholder="Пароль"
+                    placeholderTextColor="#BDBDBD"
+                    secureTextEntry={showPassword}
+                    onFocus={() => {
+                      handleInputFocus("password");
+                    }}
+                    onBlur={() => {
+                      handleInputBlur("password");
+                    }}
+                    value={state.password}
+                    onChangeText={(value) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        password: value,
+                      }))
+                    }
+                  />
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    style={styles.btn}
-                    onPress={onSubmit}
+                    style={styles.btnShowPassword}
+                    onPress={() => setShowPassword(!showPassword)}
                   >
-                    <Text style={styles.btnTitle}>Войти</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.btnSecondary}
-                    onPress={() => navigation.navigate("Регистрация")}
-                  >
-                    <Text style={styles.btnSecondaryTitle}>
-                      Нет аккаунта? Зарегистрироваться
+                    <Text style={styles.titleShowPassword}>
+                      {showPassword ? "Показать" : "Скрыть"}
                     </Text>
                   </TouchableOpacity>
-                </>
-              )}
+                </View>
+
+                {!isShowKeyboard && (
+                  <>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      style={styles.btn}
+                      onPress={onSubmit}
+                    >
+                      <Text style={styles.btnTitle}>Войти</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      style={styles.btnSecondary}
+                      onPress={() => navigation.navigate("Регистрация")}
+                    >
+                      <Text style={styles.btnSecondaryTitle}>
+                        Нет аккаунта? Зарегистрироваться
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
             </View>
-          </View>
           </KeyboardAvoidingView>
         </ImageBackground>
       </View>

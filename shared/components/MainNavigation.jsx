@@ -20,6 +20,14 @@ const MainNavigation = () => {
         tabBarActiveTintColor: "#FF6C00",
         tabBarShowLabel: false,
         headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontFamily: "R-Medium",
+          fontSize: 17,
+        },
+        headerStyle: {
+          borderBottomWidth: 0.5,
+          borderBottomColor: "#b3b3b3",
+        },
       }}
     >
       <UserBottomTab.Screen
@@ -27,9 +35,9 @@ const MainNavigation = () => {
           tabBarIcon: ({ size, color }) => (
             <AntDesign name="appstore-o" size={size} color={color} />
           ),
-          headerRight: () => <LogoutHeader />,
+          headerShown: false,
         }}
-        name="Публикации"
+        name="Home"
         component={PostsScreen}
       />
       <UserBottomTab.Screen

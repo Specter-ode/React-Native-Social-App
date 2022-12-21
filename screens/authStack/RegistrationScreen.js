@@ -72,7 +72,7 @@ const RegistrationScreen = ({ navigation }) => {
               style={{
                 ...styles.form,
                 paddingBottom: isShowKeyboard ? 32 : 66,
-                height: isShowKeyboard ? 374 : 549,
+                height: isShowKeyboard ? 374 : 534,
               }}
             >
               <View style={styles.avatar}>
