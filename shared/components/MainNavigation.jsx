@@ -18,7 +18,8 @@ const MainNavigation = () => {
   return (
     <UserBottomTab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#FF6C00",
+        tabBarActiveTintColor: "#212121CC",
+        tabBarInactiveTintColor: "#212121CC",
         tabBarShowLabel: false,
         headerTitleAlign: "center",
         headerTitleStyle: {
@@ -61,10 +62,10 @@ const MainNavigation = () => {
                   borderRadius: 20,
                   justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: color,
+                  backgroundColor: "#FF6C00",
                 }}
               >
-                <AntDesign name="plus" size={size} color="#fff" />
+                <AntDesign name="plus" size={size} color="#FFF" />
               </View>
             ),
             tabBarStyle: { display: "none" },
