@@ -10,6 +10,7 @@ import {
   Platform,
   Alert,
   Image,
+  Dimensions,
 } from "react-native";
 import uuid from "react-native-uuid";
 import { Camera, CameraType } from "expo-camera";
@@ -63,7 +64,7 @@ const CreatePostsScreen = ({ navigation }) => {
   useEffect(() => {
     navigation.addListener("focus", () => {
       setOpenCamera(false);
-      keyboardHide();
+      setIsShowKeyboard(false);
     });
   }, [navigation]);
 
@@ -74,12 +75,12 @@ const CreatePostsScreen = ({ navigation }) => {
   }
 
   const takePhoto = async () => {
-    const { uri } = await camera.takePictureAsync();
+    const photo = await camera.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
-    await MediaLibrary.createAssetAsync(uri);
+    await MediaLibrary.createAssetAsync(photo.uri);
     setState((prevState) => ({
       ...prevState,
-      photo: uri,
+      photo: photo.uri,
       location: {
         longitude: location.coords.longitude,
         latitude: location.coords.latitude,
@@ -150,12 +151,16 @@ const CreatePostsScreen = ({ navigation }) => {
     setOpenCamera(false);
     setState((prevState) => ({ ...prevState, photo: null }));
   };
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+  const WINDOW_HEIGHT = Dimensions.get("window").height;
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container}>
+      <View
+        style={{
+          ...styles.container,
+          paddingVertical: WINDOW_HEIGHT > 700 ? 32 : 12,
+        }}
+      >
         <View style={styles.form}>
           {!isShowKeyboard && (
             <View style={styles.cameraBlock}>
@@ -168,6 +173,9 @@ const CreatePostsScreen = ({ navigation }) => {
                         ref={setCamera}
                         type={type}
                         flashMode="auto"
+                        onMountError={(error) => {
+                          console.log("camera error", error);
+                        }}
                       >
                         <TouchableOpacity
                           style={{
@@ -180,8 +188,10 @@ const CreatePostsScreen = ({ navigation }) => {
                         </TouchableOpacity>
                       </Camera>
                     </>
+                  ) : hasPermission === "null" ? (
+                    <Text>Ожиданием разрешения для работы c камерой</Text>
                   ) : (
-                    <Text>No access to camera</Text>
+                    <Text>Разрешение для доступа к камере отсутствует</Text>
                   )}
                 </>
               ) : (
@@ -213,7 +223,12 @@ const CreatePostsScreen = ({ navigation }) => {
           )}
 
           {hasPermission && openCamera ? (
-            <View style={styles.bottomCameraBlock}>
+            <View
+              style={{
+                ...styles.bottomCameraBlock,
+                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 18,
+              }}
+            >
               <TouchableOpacity
                 style={styles.btnChangeCamera}
                 onPress={deletePhoto}
@@ -240,7 +255,13 @@ const CreatePostsScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity style={styles.loadBtn} onPress={deletePhoto}>
+            <TouchableOpacity
+              style={{
+                ...styles.loadBtn,
+                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 18,
+              }}
+              onPress={deletePhoto}
+            >
               <Text style={{ ...styles.btnTitle, color: "#BDBDBD" }}>
                 {photo ? "Редактировать фото" : "Загрузить фото"}
               </Text>
@@ -253,7 +274,7 @@ const CreatePostsScreen = ({ navigation }) => {
                 ...styles.input,
                 fontFamily: title ? "R-Medium" : "R-Regular",
                 borderColor: isFocused.title ? "#FF6C00" : "#E8E8E8",
-                marginBottom: 32,
+                marginBottom: WINDOW_HEIGHT > 700 ? 32 : 12,
               }}
               placeholder="Название..."
               placeholderTextColor="#BDBDBD"
@@ -268,7 +289,12 @@ const CreatePostsScreen = ({ navigation }) => {
                 setState((prevState) => ({ ...prevState, title: value }))
               }
             />
-            <View style={styles.placeInputBlock}>
+            <View
+              style={{
+                ...styles.placeInputBlock,
+                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 12,
+              }}
+            >
               <Feather
                 name="map-pin"
                 size={24}
@@ -341,7 +367,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 16,
-    paddingVertical: 32,
   },
   cameraBlock: {
     alignItems: "center",
@@ -375,18 +400,15 @@ const styles = StyleSheet.create({
   },
   bottomCameraBlock: {
     marginTop: 8,
-    marginBottom: 48,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   loadBtn: {
     marginTop: 8,
-    marginBottom: 48,
   },
   placeInputBlock: {
     position: "relative",
-    marginBottom: 32,
   },
   placeIcon: {
     position: "absolute",

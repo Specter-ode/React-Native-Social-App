@@ -6,7 +6,8 @@ import { Asset } from "expo-asset";
 import { NavigationContainer } from "@react-navigation/native";
 import { MainNavigation, AuthNavigation } from "./shared/components";
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
+// До этого работало, а теперь если не закомментировать эту строку то всегда белый экран на телефоне
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
