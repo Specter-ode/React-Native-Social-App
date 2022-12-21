@@ -10,6 +10,7 @@ import {
 
 import { Feather, AntDesign } from "@expo/vector-icons";
 import { View } from "react-native";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 const UserBottomTab = createBottomTabNavigator();
 
@@ -31,11 +32,20 @@ const MainNavigation = () => {
       }}
     >
       <UserBottomTab.Screen
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <AntDesign name="appstore-o" size={size} color={color} />
-          ),
-          headerShown: false,
+        options={({ route }) => {
+          return {
+            tabBarStyle: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+              if (routeName === "Комментарии" || routeName === "Карта") {
+                return { display: "none" };
+              }
+              return;
+            })(route),
+            tabBarIcon: ({ size, color }) => (
+              <AntDesign name="appstore-o" size={size} color={color} />
+            ),
+            headerShown: false,
+          };
         }}
         name="Home"
         component={PostsScreen}
@@ -57,7 +67,7 @@ const MainNavigation = () => {
                 <AntDesign name="plus" size={size} color="#fff" />
               </View>
             ),
-
+            tabBarStyle: { display: "none" },
             headerLeft: () => <BackArrowHeader navigation={navigation} />,
           };
         }}
