@@ -64,7 +64,6 @@ const CreatePostsScreen = ({ navigation }) => {
   useEffect(() => {
     navigation.addListener("focus", () => {
       setOpenCamera(false);
-      setIsShowKeyboard(false);
     });
   }, [navigation]);
 
@@ -151,6 +150,20 @@ const CreatePostsScreen = ({ navigation }) => {
     setOpenCamera(false);
     setState((prevState) => ({ ...prevState, photo: null }));
   };
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setIsShowKeyboard(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setIsShowKeyboard(false);
+    });
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   const WINDOW_HEIGHT = Dimensions.get("window").height;
 
   return (
