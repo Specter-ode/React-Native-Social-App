@@ -158,7 +158,7 @@ const CreatePostsScreen = ({ navigation }) => {
       <View
         style={{
           ...styles.container,
-          paddingVertical: WINDOW_HEIGHT > 700 ? 32 : 12,
+          paddingVertical: WINDOW_HEIGHT > 700 ? 32 : 22,
         }}
       >
         <View style={styles.form}>
@@ -226,7 +226,7 @@ const CreatePostsScreen = ({ navigation }) => {
             <View
               style={{
                 ...styles.bottomCameraBlock,
-                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 18,
+                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 28,
               }}
             >
               <TouchableOpacity
@@ -258,7 +258,7 @@ const CreatePostsScreen = ({ navigation }) => {
             <TouchableOpacity
               style={{
                 ...styles.loadBtn,
-                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 18,
+                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 28,
               }}
               onPress={deletePhoto}
             >
@@ -274,7 +274,7 @@ const CreatePostsScreen = ({ navigation }) => {
                 ...styles.input,
                 fontFamily: title ? "R-Medium" : "R-Regular",
                 borderColor: isFocused.title ? "#FF6C00" : "#E8E8E8",
-                marginBottom: WINDOW_HEIGHT > 700 ? 32 : 12,
+                marginBottom: WINDOW_HEIGHT > 700 ? 32 : 22,
               }}
               placeholder="Название..."
               placeholderTextColor="#BDBDBD"
@@ -292,7 +292,7 @@ const CreatePostsScreen = ({ navigation }) => {
             <View
               style={{
                 ...styles.placeInputBlock,
-                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 12,
+                marginBottom: WINDOW_HEIGHT > 700 ? 48 : 22,
               }}
             >
               <Feather
