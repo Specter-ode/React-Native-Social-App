@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -15,24 +15,48 @@ import {
   Dimensions,
 } from "react-native";
 import { AvatarBoxIcon } from "../../shared/svgComponents";
+import { useDispatch } from "react-redux";
+import { handleRegistration } from "../../redux/auth/auth-operations";
+import * as ImagePicker from "expo-image-picker";
 
 const initialState = {
   name: "",
   email: "",
   password: "",
+  avatar: null,
 };
 
 const initialStateFocus = {
-  name: false,
-  email: false,
-  password: false,
+  name: "",
+  email: "",
+  password: "",
 };
 const RegistrationScreen = ({ navigation }) => {
-  const [avatar, setAvatar] = useState(true);
   const [showPassword, setShowPassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [isFocused, setIsFocused] = useState(initialStateFocus);
+
+  const dispatch = useDispatch();
+
+  const getImageFromLibrary = async () => {
+    if (state.avatar) {
+      return setState((prevState) => ({
+        ...prevState,
+        avatar: null,
+      }));
+    }
+    let file = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.3,
+    });
+
+    if (!file.canceled) {
+      setState((prevState) => ({ ...prevState, avatar: file.assets[0].uri }));
+    }
+  };
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -52,42 +76,53 @@ const RegistrationScreen = ({ navigation }) => {
     });
   };
   const onSubmit = () => {
-    console.log("state: ", state);
+    dispatch(handleRegistration(state));
     setState(initialState);
   };
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setIsShowKeyboard(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setIsShowKeyboard(false);
+    });
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container}>
-        <ImageBackground
-          style={styles.image}
-          source={require("../../assets/images/background.jpg")}
-        >
-          <StatusBar style="auto" />
-          <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
-            style={{ width: "100%" }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={keyboardHide}>
+        <View style={styles.container}>
+          <ImageBackground
+            style={styles.image}
+            source={require("../../assets/images/background.jpg")}
           >
+            <StatusBar style="auto" />
+
             <View
               style={{
                 ...styles.form,
                 paddingBottom: isShowKeyboard ? 32 : 66,
-                height: isShowKeyboard ? 374 : 534,
               }}
             >
               <View style={styles.avatar}>
-                {avatar ? (
+                {state.avatar ? (
                   <>
                     <Image
                       style={styles.avatarImage}
-                      source={require("../../assets/images/avatar.jpg")}
+                      source={{ uri: state.avatar }}
                     />
                     <TouchableOpacity
-                      activeOpacity={0.6}
+                      activeOpacity={0.7}
                       style={styles.iconBlock}
-                      onPress={() => {
-                        setAvatar(false);
-                      }}
+                      onPress={getImageFromLibrary}
                     >
                       <AvatarBoxIcon
                         style={{
@@ -101,10 +136,8 @@ const RegistrationScreen = ({ navigation }) => {
                 ) : (
                   <TouchableOpacity
                     style={styles.iconBlock}
-                    activeOpacity={0.6}
-                    onPress={() => {
-                      setAvatar(true);
-                    }}
+                    activeOpacity={0.7}
+                    onPress={getImageFromLibrary}
                   >
                     <AvatarBoxIcon
                       style={{
@@ -201,7 +234,6 @@ const RegistrationScreen = ({ navigation }) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    style={styles.btnSecondary}
                     onPress={() => navigation.navigate("Войти")}
                   >
                     <Text style={styles.btnSecondaryTitle}>
@@ -211,10 +243,10 @@ const RegistrationScreen = ({ navigation }) => {
                 </>
               )}
             </View>
-          </KeyboardAvoidingView>
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
+          </ImageBackground>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -300,8 +332,6 @@ const styles = StyleSheet.create({
     color: "#1B4371",
     fontSize: 16,
   },
-  btnSecondary: {},
-
   btnSecondaryTitle: {
     fontFamily: "R-Regular",
     fontSize: 16,

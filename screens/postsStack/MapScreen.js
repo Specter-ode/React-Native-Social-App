@@ -7,17 +7,17 @@ const MapScreen = ({ route }) => {
   const { title } = route.params.title;
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude,
-          longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.006,
-        }}
-      >
-        <Marker coordinate={{ latitude, longitude }} title={title} />
-      </MapView>
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude,
+            longitude,
+            latitudeDelta: 0.001,
+            longitudeDelta: 0.006,
+          }}
+        >
+          <Marker coordinate={{ latitude, longitude }} title={title} />
+        </MapView>
     </View>
   );
 };

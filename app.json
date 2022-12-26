@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "react-native-workspace",
-    "slug": "react-native-workspace",
+    "name": "react-native-task",
+    "slug": "react-native-task",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

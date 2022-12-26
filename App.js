@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 import { View } from "react-native";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { Asset } from "expo-asset";
 import { NavigationContainer } from "@react-navigation/native";
-import { MainNavigation, AuthNavigation } from "./shared/components";
+import Main from "./shared/components/Main";
 
-// SplashScreen.preventAutoHideAsync();
-// До этого работало, а теперь если не закомментировать эту строку то всегда белый экран на телефоне
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
-  const isAuth = true;
-
   useEffect(() => {
     async function prepare() {
       try {
@@ -44,10 +43,12 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer onLayout={onLayoutRootView}>
-      <View style={{ height: "100%" }}>
-        {isAuth ? <MainNavigation /> : <AuthNavigation />}
-      </View>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <View style={{ height: "100%" }} onLayout={onLayoutRootView}>
+          <Main />
+        </View>
+      </NavigationContainer>
+    </Provider>
   );
 }

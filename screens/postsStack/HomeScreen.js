@@ -6,28 +6,79 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "../../redux/auth/auth-selectors";
+import { getPosts } from "../../redux/dashboard/dashboard-selectors";
+import { db } from "../../firebase";
+import { collection, onSnapshot } from "firebase/firestore";
+import { handlePosts } from "../../redux/dashboard/dashboard-slice";
+import {
+  addLike,
+  deleteLike,
+  deletePost,
+} from "../../redux/dashboard/dashboard-operations";
 
-const HomeScreen = ({ route, navigation }) => {
-  const [posts, setPosts] = useState([]);
+const HomeScreen = ({ navigation }) => {
+  const posts = useSelector(getPosts);
+  const { name, email, avatar, id } = useSelector(getUser);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
+  const getDatabasePosts = () => {
+    const postsStorageRef = collection(db, `posts`);
+    onSnapshot(postsStorageRef, (data) => {
+      if (data.docs.length) {
+        const dbPosts = data.docs.map((post) => ({
+          ...post.data(),
+          id: post.id,
+        }));
+        dispatch(handlePosts(dbPosts));
+      }
+    });
+  };
+  const deleteUserPost = (post) => {
+    if (id !== post.postAuthor) return;
+
+    return Alert.alert("Удалить публикацию?", `Публикация: «${post.title}»`, [
+      { text: "Нет" },
+      {
+        text: "Да, подтвердить",
+        onPress: () => {
+          dispatch(deletePost(post.id));
+        },
+      },
+    ]);
+  };
+
+  const handleLike = (post) => {
+    if (id === post.postAuthor) return;
+    const isLiked = post.likes.includes(id);
+    if (isLiked) {
+      dispatch(deleteLike(post.id));
+    } else {
+      dispatch(addLike(post.id));
     }
-  }, [route.params]);
+  };
+  useEffect(() => {
+    getDatabasePosts();
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.userBlock}>
-        <Image
-          style={styles.userAvatar}
-          source={require("../../assets/images/avatar.jpg")}
-        />
+        {avatar ? (
+          <Image style={styles.userAvatar} source={{ uri: avatar }} />
+        ) : (
+          <View
+            style={{ ...styles.userAvatar, backgroundColor: "#F6F6F6" }}
+          ></View>
+        )}
+
         <View>
-          <Text style={styles.userLogin}>Natali Romanova</Text>
-          <Text style={styles.userEmail}>email@example.com</Text>
+          <Text style={styles.userLogin}>{name}</Text>
+          <Text style={styles.userEmail}>{email}</Text>
         </View>
       </View>
 
@@ -37,41 +88,86 @@ const HomeScreen = ({ route, navigation }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.postBlock}>
-            <Image source={{ uri: item.photo }} style={styles.postImage} />
+            <TouchableOpacity
+              style={{ marginBottom: 8 }}
+              onLongPress={() => {
+                deleteUserPost(item);
+              }}
+            >
+              <Image source={{ uri: item.photo }} style={styles.postImage} />
+            </TouchableOpacity>
             <Text style={styles.postTitle}>{item.title}</Text>
             <View style={styles.postPlaceContainer}>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  style={styles.btnBlock}
+                  onPress={() =>
+                    navigation.navigate("Комментарии", {
+                      postId: item.id,
+                      photo: item.photo,
+                    })
+                  }
+                >
+                  <Feather
+                    name="message-circle"
+                    size={22}
+                    color={
+                      item.comments.find((el) => el.commentAuthor.id === id)
+                        ? "#FF6C00"
+                        : "#BDBDBD"
+                    }
+                    style={styles.icon}
+                  />
+                  <Text style={styles.counter}>{item.comments.length}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ ...styles.btnBlock, marginLeft: 10 }}
+                  onPress={() => {
+                    handleLike(item);
+                  }}
+                >
+                  <Feather
+                    name="thumbs-up"
+                    size={21}
+                    color={item.likes.includes(id) ? "#FF6C00" : "#BDBDBD"}
+                    style={styles.icon}
+                  />
+                  <Text style={styles.counter}>{item.likes.length}</Text>
+                </TouchableOpacity>
+              </View>
               <TouchableOpacity
-                style={styles.postPlaceBlock}
-                onPress={() =>
-                  navigation.navigate("Комментарии", {
-                    postId: item.id,
-                  })
-                }
-              >
-                <Feather
-                  name="message-circle"
-                  size={24}
-                  color="#BDBDBD"
-                  style={styles.icon}
-                />
-                <Text style={styles.commentsCounter}>0</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.postPlaceBlock}
-                onPress={() =>
-                  navigation.navigate("Карта", {
-                    location: item.location,
-                    title: item.title,
-                  })
-                }
+                style={styles.btnBlock}
+                onPress={() => {
+                  if (item.location.isLocation) {
+                    return navigation.navigate("Карта", {
+                      location: item.location,
+                      title: item.title,
+                    });
+                  }
+                  return Alert.alert("", "Пользователь не указал геолокацию", [
+                    { text: "OK" },
+                  ]);
+                }}
               >
                 <Feather
                   name="map-pin"
-                  size={24}
+                  size={20}
                   color="#BDBDBD"
                   style={styles.icon}
                 />
-                <Text style={styles.postPlace}>{item.place}</Text>
+                <Text
+                  style={{
+                    ...styles.postPlace,
+                    color: item.location.isLocation ? "#212121" : "#BDBDBD",
+                    borderColor: item.location.isLocation
+                      ? "#212121"
+                      : "#BDBDBD",
+                  }}
+                >
+                  {item.location.isLocation
+                    ? `${item.placeDescription.region}, ${item.placeDescription.country}`
+                    : "не указано"}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -108,31 +204,31 @@ const styles = StyleSheet.create({
     color: "#212121CC",
   },
   postBlock: {
-    marginBottom: 34,
+    marginBottom: 30,
     width: "100%",
   },
   postImage: {
     height: 240,
     borderRadius: 8,
-    marginBottom: 8,
   },
   postTitle: {
     fontFamily: "R-Medium",
     fontSize: 16,
     color: "#212121",
-    marginBottom: 11,
+    marginBottom: 8,
   },
   postPlaceContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   icon: {
-    marginRight: 9,
+    marginRight: 5,
   },
-  postPlaceBlock: {
+  btnBlock: {
     flexDirection: "row",
+    alignItems: "center",
   },
-  commentsCounter: {
+  counter: {
     color: "#BDBDBD",
     fontFamily: "R-Regular",
     fontSize: 16,
@@ -140,9 +236,7 @@ const styles = StyleSheet.create({
   postPlace: {
     fontFamily: "R-Regular",
     fontSize: 16,
-    color: "#212121",
     borderBottomWidth: 1,
-    borderColor: "#212121",
   },
 });
 

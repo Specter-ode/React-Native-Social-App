@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -12,6 +12,8 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { handleLogin } from "../../redux/auth/auth-operations";
 
 const initialState = {
   email: "",
@@ -26,6 +28,8 @@ const LoginScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [isFocused, setIsFocused] = useState(initialStateFocus);
+
+  const dispatch = useDispatch();
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -46,28 +50,41 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const onSubmit = () => {
-    console.log("state: ", state);
+    dispatch(handleLogin(state));
     setState(initialState);
   };
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setIsShowKeyboard(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setIsShowKeyboard(false);
+    });
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container}>
-        <ImageBackground
-          style={styles.image}
-          source={require("../../assets/images/background.jpg")}
-        >
-          <StatusBar style="auto" />
-          <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
-            style={{ width: "100%" }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={keyboardHide}>
+        <View style={styles.container}>
+          <ImageBackground
+            style={styles.image}
+            source={require("../../assets/images/background.jpg")}
           >
+            <StatusBar style="auto" />
+
             <View style={styles.formBlock}>
               <View
                 style={{
                   ...styles.form,
                   paddingBottom: isShowKeyboard ? 32 : 132,
-                  height: isShowKeyboard ? 258 : 474,
                 }}
               >
                 <Text style={styles.title}>Войти</Text>
@@ -148,10 +165,10 @@ const LoginScreen = ({ navigation }) => {
                 )}
               </View>
             </View>
-          </KeyboardAvoidingView>
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
+          </ImageBackground>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

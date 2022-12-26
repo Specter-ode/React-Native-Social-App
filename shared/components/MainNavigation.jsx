@@ -1,6 +1,5 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { LogoutHeader } from "./LogoutHeader";
 import { BackArrowHeader } from "./BackArrowHeader";
 import {
   PostsScreen,
@@ -81,7 +80,7 @@ const MainNavigation = () => {
             tabBarIcon: ({ size, color }) => (
               <Feather name="user" size={size} color={color} />
             ),
-            headerLeft: () => <BackArrowHeader navigation={navigation} />,
+            headerShown: false,
           };
         }}
         name="Profile"
