@@ -1,13 +1,15 @@
 {
   "expo": {
-    "name": "react-native-task",
+    "name": "Social Network",
     "slug": "react-native-task",
+    "privacy": "public",
+    "description": "You must log in. After that you can publish posts with photo, title and location. Look at posts of anothers users, you can comment and like them",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/adaptive-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

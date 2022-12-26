@@ -22,9 +22,6 @@ const dashboardSlice = createSlice({
     handlePosts: (state, { payload }) => {
       state.posts = payload;
     },
-    // handleComments: (state, { payload }) => {
-    //   state.comments = payload;
-    // },
   },
   extraReducers: (builder) => {
     builder

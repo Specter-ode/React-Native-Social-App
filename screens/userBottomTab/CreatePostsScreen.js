@@ -32,6 +32,7 @@ const initialState = {
   location: {
     isLocation: false,
   },
+  creationDate: null,
 };
 
 const initialStateFocus = {
@@ -162,6 +163,7 @@ const CreatePostsScreen = ({ navigation }) => {
         [{ text: "OK" }]
       );
     }
+    console.log("создаем пост");
     dispatch(createPost(state));
     navigation.navigate("Публикации");
     clearFields();

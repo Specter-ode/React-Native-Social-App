@@ -33,7 +33,9 @@ const ProfileScreen = ({ navigation }) => {
     dispatch(handleLogout());
   };
   const getCurrentUserPosts = (allPosts, userId) => {
-    const userPosts = allPosts.filter((el) => userId === el.postAuthor);
+    const userPosts = allPosts
+      .filter((el) => userId === el.postAuthor)
+      .sort((a, b) => b.creationDate - a.creationDate);
     setCurrentUserPosts(userPosts);
   };
 
@@ -153,12 +155,19 @@ const ProfileScreen = ({ navigation }) => {
                   </View>
                   <TouchableOpacity
                     style={styles.btnBlock}
-                    onPress={() =>
-                      navigation.navigate("Карта", {
-                        location: item.location,
-                        title: item.title,
-                      })
-                    }
+                    onPress={() => {
+                      if (item.location.isLocation) {
+                        return navigation.navigate("Карта", {
+                          location: item.location,
+                          title: item.title,
+                        });
+                      }
+                      return Alert.alert(
+                        "",
+                        "Пользователь не указал геолокацию",
+                        [{ text: "OK" }]
+                      );
+                    }}
                   >
                     <Feather
                       name="map-pin"
