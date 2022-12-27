@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { nanoid } from "@reduxjs/toolkit";
 import {
   View,
   Text,
@@ -16,7 +15,6 @@ import {
 } from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
-import { auth, storage } from "../../firebase";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
@@ -163,7 +161,6 @@ const CreatePostsScreen = ({ navigation }) => {
         [{ text: "OK" }]
       );
     }
-    console.log("создаем пост");
     dispatch(createPost(state));
     navigation.navigate("Публикации");
     clearFields();

@@ -24,6 +24,7 @@ import { handleLogout, changeAvatar } from "../../redux/auth/auth-operations";
 import { CommentIcon } from "../../shared/svgComponents";
 const ProfileScreen = ({ navigation }) => {
   const [currentUserPosts, setCurrentUserPosts] = useState([]);
+  console.log("currentUserPosts: ", currentUserPosts);
   const dispatch = useDispatch();
 
   const posts = useSelector(getPosts);
@@ -119,80 +120,95 @@ const ProfileScreen = ({ navigation }) => {
             )}
           </View>
           <Text style={styles.title}>{name}</Text>
-          <FlatList
-            data={currentUserPosts}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.postBlock}>
-                <Image source={{ uri: item.photo }} style={styles.postImage} />
-                <Text style={styles.postTitle}>{item.title}</Text>
-                <View style={styles.postPlaceContainer}>
-                  <View style={{ flexDirection: "row" }}>
+          {currentUserPosts.length > 0 ? (
+            <FlatList
+              data={currentUserPosts}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <View style={styles.postBlock}>
+                  <Image
+                    source={{ uri: item.photo }}
+                    style={styles.postImage}
+                  />
+                  <Text style={styles.postTitle}>{item.title}</Text>
+                  <View style={styles.postPlaceContainer}>
+                    <View style={{ flexDirection: "row" }}>
+                      <TouchableOpacity
+                        style={styles.btnBlock}
+                        onPress={() =>
+                          navigation.navigate("Комментарии", {
+                            postId: item.id,
+                            photo: item.photo,
+                          })
+                        }
+                      >
+                        <CommentIcon fill="#FF6C00" style={styles.icon} />
+                        <Text style={styles.counter}>
+                          {item.comments.length}
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={{ ...styles.btnBlock, marginLeft: 20 }}
+                      >
+                        <Feather
+                          name="thumbs-up"
+                          size={22}
+                          color="#FF6C00"
+                          style={styles.icon}
+                        />
+                        <Text style={styles.counter}>{item.likes.length}</Text>
+                      </TouchableOpacity>
+                    </View>
                     <TouchableOpacity
                       style={styles.btnBlock}
-                      onPress={() =>
-                        navigation.navigate("Комментарии", {
-                          postId: item.id,
-                          photo: item.photo,
-                        })
-                      }
-                    >
-                      <CommentIcon fill="#FF6C00" style={styles.icon} />
-                      <Text style={styles.counter}>{item.comments.length}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={{ ...styles.btnBlock, marginLeft: 20 }}
-                      onPress={() => {}}
-                    >
-                      <Feather
-                        name="thumbs-up"
-                        size={22}
-                        color="#FF6C00"
-                        style={styles.icon}
-                      />
-                      <Text style={styles.counter}>{item.likes.length}</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.btnBlock}
-                    onPress={() => {
-                      if (item.location.isLocation) {
-                        return navigation.navigate("Карта", {
-                          location: item.location,
-                          title: item.title,
-                        });
-                      }
-                      return Alert.alert(
-                        "",
-                        "Пользователь не указал геолокацию",
-                        [{ text: "OK" }]
-                      );
-                    }}
-                  >
-                    <Feather
-                      name="map-pin"
-                      size={20}
-                      color="#BDBDBD"
-                      style={styles.icon}
-                    />
-                    <Text
-                      style={{
-                        ...styles.postPlace,
-                        color: item.location.isLocation ? "#212121" : "#BDBDBD",
-                        borderColor: item.location.isLocation
-                          ? "#212121"
-                          : "#BDBDBD",
+                      onPress={() => {
+                        if (item.location.isLocation) {
+                          return navigation.navigate("Карта", {
+                            location: item.location,
+                            title: item.title,
+                          });
+                        }
+                        return Alert.alert(
+                          "",
+                          "Пользователь не указал геолокацию",
+                          [{ text: "OK" }]
+                        );
                       }}
                     >
-                      {item.location.isLocation
-                        ? item.placeDescription.country
-                        : "не указано"}
-                    </Text>
-                  </TouchableOpacity>
+                      <Feather
+                        name="map-pin"
+                        size={20}
+                        color="#BDBDBD"
+                        style={styles.icon}
+                      />
+                      <Text
+                        style={{
+                          ...styles.postPlace,
+                          color: item.location.isLocation
+                            ? "#212121"
+                            : "#BDBDBD",
+                          borderColor: item.location.isLocation
+                            ? "#212121"
+                            : "#BDBDBD",
+                        }}
+                      >
+                        {item.location.isLocation
+                          ? item.placeDescription.country
+                          : "не указано"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            )}
-          />
+              )}
+            />
+          ) : (
+            <View>
+              <Text style={styles.textBlock}>У вас нет публикаций.</Text>
+              <Text style={styles.textBlock}>
+                Перейдите на вкладку создать публикацию
+              </Text>
+            </View>
+          )}
         </View>
       </ImageBackground>
     </View>
@@ -289,6 +305,12 @@ const styles = StyleSheet.create({
     fontFamily: "R-Regular",
     fontSize: 16,
     borderBottomWidth: 1,
+  },
+  textBlock: {
+    fontFamily: "R-Medium",
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 20,
   },
 });
 

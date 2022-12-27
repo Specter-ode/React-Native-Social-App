@@ -10,6 +10,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Keyboard,
+  Alert,
   TouchableWithoutFeedback,
 } from "react-native";
 import { useDispatch } from "react-redux";
@@ -50,6 +51,14 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const onSubmit = () => {
+    if (!state.email) {
+      return Alert.alert("", "Вы не указали email!", [{ text: "OK" }]);
+    }
+    if (state.password.length < 6) {
+      return Alert.alert("", "Ваш пароль должен біть минимум 6 символов!", [
+        { text: "OK" },
+      ]);
+    }
     dispatch(handleLogin(state));
     setState(initialState);
   };

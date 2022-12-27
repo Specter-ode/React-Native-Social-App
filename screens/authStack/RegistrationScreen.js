@@ -13,6 +13,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Dimensions,
+  Alert,
 } from "react-native";
 import { AvatarBoxIcon } from "../../shared/svgComponents";
 import { useDispatch } from "react-redux";
@@ -76,7 +77,19 @@ const RegistrationScreen = ({ navigation }) => {
     });
   };
   const onSubmit = () => {
+    if (!state.name) {
+      return Alert.alert("Вы не указали логин!", "", [{ text: "OK" }]);
+    }
+    if (!state.email) {
+      return Alert.alert("Вы не указали email!", "", [{ text: "OK" }]);
+    }
+    if (state.password.length < 6) {
+      return Alert.alert("Ваш пароль должен біть минимум 6 символов!", "", [
+        { text: "OK" },
+      ]);
+    }
     dispatch(handleRegistration(state));
+
     setState(initialState);
   };
 

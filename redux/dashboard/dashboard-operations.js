@@ -21,7 +21,7 @@ export const createPost = createAsyncThunk(
   "dashboard/createPost",
   async (postData, { rejectWithValue }) => {
     try {
-      const { photo, title, placeDescription, location, id } = postData;
+      const { photo, title, placeDescription, location } = postData;
       const randomId = nanoid();
       // загружаем фото в storage
       const postImageStorageRef = ref(storage, `posts/${randomId}`);
@@ -40,6 +40,7 @@ export const createPost = createAsyncThunk(
         likes: [],
         comments: [],
         postAuthor: auth.currentUser.uid,
+        creationDate: new Date().getTime(),
       });
     } catch (error) {
       return rejectWithValue(error.response.data.message || error.message);

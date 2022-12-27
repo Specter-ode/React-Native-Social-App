@@ -38,6 +38,7 @@ const HomeScreen = ({ navigation }) => {
       }
     });
   };
+
   const deleteUserPost = (post) => {
     if (id !== post.postAuthor) return;
 
