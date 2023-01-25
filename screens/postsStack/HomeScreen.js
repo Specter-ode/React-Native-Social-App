@@ -23,6 +23,7 @@ import {
 
 const HomeScreen = ({ navigation }) => {
   const posts = useSelector(getPosts);
+
   const { name, email, avatar, id } = useSelector(getUser);
   const dispatch = useDispatch();
 
@@ -30,11 +31,15 @@ const HomeScreen = ({ navigation }) => {
     const postsStorageRef = collection(db, `posts`);
     onSnapshot(postsStorageRef, (data) => {
       if (data.docs.length) {
+
         const dbPosts = data.docs.map((post) => ({
+          
           ...post.data(),
           id: post.id,
-        }));
-        dispatch(handlePosts(dbPosts));
+        }))
+
+        const sortedPosts = [...dbPosts].sort((a, b) =>b.creationDate - a.creationDate)
+        dispatch(handlePosts(sortedPosts));
       }
     });
   };

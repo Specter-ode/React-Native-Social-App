@@ -4,13 +4,13 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBDdttMl2Bhz6ffWi_Kio5zCso4rTae_DA",
-  authDomain: "test-rc-social.firebaseapp.com",
-  projectId: "test-rc-social",
-  storageBucket: "test-rc-social.appspot.com",
-  messagingSenderId: "1056995046506",
-  appId: "1:1056995046506:web:28d45d274fbf9f9c28c613",
-  measurementId: "G-5NQQ11276T",
+  apiKey: "AIzaSyBKUNhs2e5RzLFG4g8UwV77VI2OR06JXv8",
+  authDomain: "social-network-goit.firebaseapp.com",
+  projectId: "social-network-goit",
+  storageBucket: "social-network-goit.appspot.com",
+  messagingSenderId: "276579513667",
+  appId: "1:276579513667:web:db4f9884f500468da66bf6",
+  measurementId: "G-Y1S7QJJ21P",
 };
 
 const app = initializeApp(firebaseConfig);

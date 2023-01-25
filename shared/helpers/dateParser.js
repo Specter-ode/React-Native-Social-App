@@ -8,13 +8,6 @@ export const dateParser = (date, parseType) => {
         month: "long",
         day: "numeric",
       };
-      // import { format } from "date-fns";
-
-      // var date = new Date("2016-01-04 10:34:23");
-
-      // var formattedDate = format(date, "MMMM do, yyyy H:mma");
-
-      const test = new Date(date).toLocaleString("ru-RU", options);
       const dateArr = new Date(date).toLocaleDateString().split("/");
       dateArr.splice(2, 1, "2022");
       const slicedDate = dateArr.slice(1, 3);
